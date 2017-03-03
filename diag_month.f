@@ -1,10 +1,8 @@
         
 	
-	parameter (iyst = 1982, iyend = 2014, mmax0=5       )   ! zhang: need to be changed
-
-	parameter (nx=134 ,ny=61         )
+	parameter (iyst = 1982, iyend = 2014, mmax0 = 5 )   ! zhang: need to be changed
+	parameter (nx=134 ,ny=61 )
         parameter (m1=4425,m2=4425,np =2 )
-
 	parameter (imt = nx, jmt = ny, km = 1 , mmax = 12)
 	parameter (rmiss = -1.e34)
 
@@ -12,23 +10,20 @@
 	dimension w(nx*ny),neign(np)
 	dimension lsi(nx,ny),  index0(nx,ny)
 
-c zhang
+! zhang
         common /eigen/ist1(m1),ist2(m2),arr(m1,20,np)
      &,         brr(m2,20,np),stdv(20,np),sd,ud(np)
 	common /eigen12/arr12(m1,20,np,12),brr12(m2,20,np,12)
      &                 ,  stdv12(20,np,12),sd12(12),ud12(np,12)
 
-c zhang
-c       data neign/3,3/
+! zhang
+!       data neign/3,3/
         data neign/5,5/
-c       data neign/10,10/
-c       data neign/16,17/
-c
+!       data neign/10,10/
+!       data neign/16,17/
 
 	character fin*68, fout*68,fout1*68,fout2*68, fclim*68
     
-
-
  	fout1= 'taux_anom.jan1982-may2014.svdmonth.dta'
  	fout2= 'tauy_anom.jan1982-may2014.svdmonth.dta'
 
@@ -70,13 +65,13 @@ c
 
 
 
-c read in monthly svd statistics
+! read in monthly svd statistics
 
 	open(97,file='fort.97-month',form='unformatted')
 	read(97) arr12,brr12,stdv12,sd12,ud12
 	close(97)
+	
 	write(*,*)"sd12", sd12
-
         write(*,*) sd
         write(*,*) ud
 
@@ -94,26 +89,22 @@ c-------------------------------------------------------------
   
 	do iy=iyst, iyend 
 
-	mmax00=mmax
+	  mmax00=mmax
 
-	if(iy.eq.2014) mmax00=mmax0    
+	  if(iy.eq.2014) mmax00=mmax0    
 
 	do m = 1, mmax00
 
 	  nrec1 = m + (iy-1982)*12   + 2     ! begining from nov 1981
-
 	  read(15,rec=nrec1) ((odata(i,j),i=1,imt),j=1,jmt)
 	  kk=m+(iy-iyst)*12
-
  	  write(*,*) iy,m,nrec1,kk
 
         do 10 i=1,nx
         do 10 j=1,ny
 10      sst(i,j)=odata(i,j)
-c
-c       read in number of SVD modes used to construct each atmospheric variable
-c
 
+!       read in number of SVD modes used to construct each atmospheric variable
 
         do 30 l=1,2                    
 
@@ -137,7 +128,7 @@ c
 	do j = 1, jmt
 	do i = 1, imt
 	ssta(i,j) = 0.0
-c	ssta(i,j) = rmiss
+!	ssta(i,j) = rmiss
 	enddo
 	enddo
 
@@ -152,11 +143,9 @@ c	ssta(i,j) = rmiss
  	if(l.eq.1) write(21,rec=kk) ssta
  	if(l.eq.2) write(22,rec=kk) ssta
 
-c       write(6,289) iy,m,(u(i,15),i=15,20)
+!       write(6,289) iy,m,(u(i,15),i=15,20)
 
  30      continue 
-
-
 
 	enddo                   ! m
 	enddo                   ! iy
@@ -165,9 +154,9 @@ c       write(6,289) iy,m,(u(i,15),i=15,20)
  
  289    format(1x,i4,1x,i2,1x,6(f9.4,1x) )
         end
-c----------------------------------
-c       atmospheric model subroutine
-c
+!----------------------------------
+!       atmospheric model subroutine
+
 	subroutine atmos(sst,u,neign,n)
         parameter (nx=134 ,ny=61  )
         parameter (m1=4425,m2=4425,np =2 ,m3=nx*ny )
@@ -202,12 +191,11 @@ c
 30      continue
     
         do i=1,nx*ny
-c
-c       w(i)= -1.e9 for land points.
-c       w(i) can be set to zero in the coupled model
-c
+
+!       w(i)= -1.e9 for land points.
+!       w(i) can be set to zero in the coupled model
         w(i)= 0.0    
-c       w(i)= -1.e34 
+!       w(i)= -1.e34 
         enddo
         do i=1,m2
         w(ist2(i))=out(i)*ud(n)
